@@ -36,7 +36,7 @@ export default React.createClass({
   setUser(authData) {
     if (this.firebaseRefs.user) { this.unbind("user"); }
     if (authData) {
-      this.bindAsObject(db.child("users").child(authData.uid), "user");
+      this.bindAsObject(db.child("users").child(authData.twitter.id), "user");
     } else {
       this.setState({user: null});
     }
@@ -65,6 +65,12 @@ export default React.createClass({
             <Nav navbar right>
               <NavItemLink to="home">
                 Map
+              </NavItemLink>
+              <NavItemLink to="love">
+                Love
+              </NavItemLink>
+              <NavItemLink to="manage">
+                Manage
               </NavItemLink>
             </Nav>
           </CollapsableNav>
