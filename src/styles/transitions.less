@@ -1,0 +1,35 @@
+// A collection of transitions to use with ReactCSSTransitiongroup
+
+.grow-enter {
+    transition: max-height .35s ease;
+    max-height: 0;
+    overflow: hidden;
+    &.grow-enter-active {
+        max-height: 50px;
+        overflow: hidden;
+    }
+}
+.grow-leave {
+    transition: max-height .35s ease;
+    max-height: 50px;
+    overflow: hidden;
+    &.grow-leave-active {
+        max-height: 0;
+    }
+}
+
+.fade-enter {
+    transition: opacity .15s ease-in;
+    opacity: 0.01;
+    &.fade-enter-active {
+        opacity: 1;
+    }
+}
+
+.fade-leave {
+    transition: opacity .15s ease-in;
+    opacity: 1;
+    &.fade-leave-active {
+        opacity: 0.01;
+    }
+}
