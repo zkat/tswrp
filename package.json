@@ -10,12 +10,13 @@
     "test": "./node_modules/.bin/gulp test"
   },
   "dependencies": {
+    "bootstrap": "^3.3.4",
+    "bootswatch": "^3.3.4",
     "classnames": "^1.2.0",
     "firebase": "^2.2.4",
     "immutable": "^3.7.1",
-    "material-ui": "^0.7.4",
-    "mdi": "^1.0.62-beta",
     "react": "^0.13.1",
+    "react-bootstrap": "^0.21.0",
     "react-router": "^0.13.2",
     "react-tap-event-plugin": "^0.1.6",
     "reactfire": "^0.4.0"

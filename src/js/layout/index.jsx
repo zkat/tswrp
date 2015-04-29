@@ -3,11 +3,15 @@ import TransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import ReactFireMixin from "reactfire";
 import {RouteHandler} from "react-router";
 import {
-  AppCanvas,
-  AppBar,
-  FontIcon,
-  IconButton
-} from "material-ui";
+  CollapsableNav,
+  DropdownMenu,
+  MenuItem,
+  Modal,
+  ModalTrigger,
+  Nav,
+  Navbar,
+  NavItem
+} from "react-bootstrap";
 import db from "js/db";
 import "./styles.less";
 
@@ -40,22 +44,24 @@ export default React.createClass({
     let routes = router.getCurrentRoutes();
     let title = routes[routes.length-1].name;
     title = title[0].toUpperCase() + title.slice(1).toLowerCase();
-    let menuItems = [{
-
-    }];
     return (
-      <AppCanvas className="tswrp-layout">
-        <AppBar title={title}>
-          <IconButton className="login-button" touch>
-            <FontIcon className="mdi mdi-account-circle" />
-          </IconButton>
-        </AppBar>
+      <div className="tswrp-layout">
+        <Navbar fluid brand={title} toggleNavKey={0}>
+          <CollapsableNav right eventKey={0}>
+            <Nav navbar right>
+              <NavItem href={router.makeHref("home")}
+                       onClick={handle("home")}>
+                Home
+              </NavItem>
+            </Nav>
+          </CollapsableNav>
+        </Navbar>
         <TransitionGroup transitionName="fade"
                          component="div"
-                         className="transition-group mui-app-content-canvas">
+                         className="transition-group container-fluid">
           <RouteHandler key={router.getCurrentPath()}/>
         </TransitionGroup>
-      </AppCanvas>
+      </div>
     );
   }
 });

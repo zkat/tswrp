@@ -1,5 +1,4 @@
 import React from "react";
-import {RaisedButton} from "material-ui";
 
 export default React.createClass({
   contextTypes: {

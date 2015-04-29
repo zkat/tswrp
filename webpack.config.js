@@ -20,9 +20,9 @@ module.exports = {
       test: /(src\/js\/.*\.jsx?$)/,
       exclude: /firebase-web\.js/,
       loader: "babel"
-    }, {
-      include: /src\/js\/pages/,
-      loader: "react-router-proxy!babel"
+    // }, {
+    //   include: /src\/js\/pages/,
+    //   loader: "react-router-proxy!babel"
     }, {
       test: /\.less$/,
       loader: ExtractTextPlugin.extract("css?sourceMap!less?sourceMap")

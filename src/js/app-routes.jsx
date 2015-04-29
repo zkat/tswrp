@@ -7,6 +7,6 @@ import NotFoundPage from "js/pages/not-found";
 export default (
     <Route path="/" handler={Layout}>
       <DefaultRoute name="home" handler={HomePage} />
-      <NotFoundRoute handler={NotFoundPage} />
+      <NotFoundRoute name="404" handler={NotFoundPage} />
     </Route>
 );
