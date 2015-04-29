@@ -1,12 +1,25 @@
 @import "~styles/transitions.less";
+@import "~styles/variables.less";
+html,body { height: 100%; }
 .tswrp-layout {
-    .login-button {
-      float: right;
+  height: 100%;
+  position: relative;
+  .navbar {
+    z-index: 1;
+  }
+  .kumu-embed {
+    z-index: 0;
+    position: absolute;
+    top: @navbar-height;
+    left: 0;
+    width: 100%;
+    height: ~"calc(100% -" @navbar-height ~")";
+    border: none;
+  }
+  .transition-group {
+    position: relative;
+    > * {
+      position: absolute;
     }
-    .transition-group {
-        position: relative;
-        > * {
-            position: absolute;
-        }
-    }
+  }
 }

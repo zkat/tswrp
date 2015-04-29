@@ -13,6 +13,7 @@ import {
   NavItem
 } from "react-bootstrap";
 import db from "js/db";
+import KumuEmbed from "js/kumu-embed";
 import "./styles.less";
 
 export default React.createClass({
@@ -42,20 +43,21 @@ export default React.createClass({
       };
     };
     let routes = router.getCurrentRoutes();
-    let title = routes[routes.length-1].name;
-    title = title[0].toUpperCase() + title.slice(1).toLowerCase();
     return (
       <div className="tswrp-layout">
-        <Navbar fluid brand={title} toggleNavKey={0}>
+        <Navbar fluid brand="TSWRP Relationship Map" toggleNavKey={0}>
           <CollapsableNav right eventKey={0}>
             <Nav navbar right>
               <NavItem href={router.makeHref("home")}
                        onClick={handle("home")}>
-                Home
+                Map
               </NavItem>
             </Nav>
           </CollapsableNav>
         </Navbar>
+        <KumuEmbed className="kumu-embed"
+                   embedId="9272766b04dcc1a8c8e62f8dbdb90804"
+                   mapName="tswrp" />
         <TransitionGroup transitionName="fade"
                          component="div"
                          className="transition-group container-fluid">
