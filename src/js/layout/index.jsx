@@ -9,9 +9,9 @@ import {
   Modal,
   ModalTrigger,
   Nav,
-  Navbar,
-  NavItem
+  Navbar
 } from "react-bootstrap";
+import {NavItemLink} from "react-router-bootstrap";
 import db from "js/db";
 import KumuEmbed from "js/kumu-embed";
 import "./styles.less";
@@ -48,10 +48,9 @@ export default React.createClass({
         <Navbar fluid brand="TSWRP Relationship Map" toggleNavKey={0}>
           <CollapsableNav right eventKey={0}>
             <Nav navbar right>
-              <NavItem href={router.makeHref("home")}
-                       onClick={handle("home")}>
+              <NavItemLink to="home">
                 Map
-              </NavItem>
+              </NavItemLink>
             </Nav>
           </CollapsableNav>
         </Navbar>
