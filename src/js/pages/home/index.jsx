@@ -2,7 +2,7 @@ import React from "react";
 
 export default React.createClass({
   componentDidMount() {
-    this.props.mapIdBus.push("9272766b04dcc1a8c8e62f8dbdb90804");
+    this.props.mapIdBus.push("d15113d37112746b526cbde5fe0b7667");
   },
   render() {
     return <div/>;
