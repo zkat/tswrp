@@ -14,15 +14,22 @@ import {
 import {NavItemLink} from "react-router-bootstrap";
 import db from "js/db";
 import KumuEmbed from "js/kumu-embed";
+import Bacon from "baconjs";
+import {BaconMixin} from "react-bacon";
 import "./styles.less";
 
 export default React.createClass({
-  mixins: [ReactFireMixin],
+  mixins: [BaconMixin, ReactFireMixin],
   contextTypes: {
     router: React.PropTypes.func
   },
   getInitialState() {
-    return {user: null};
+    return {
+      user: null,
+      mapSelection: "",
+      mapFocus: "",
+      showMap: true
+    };
   },
   setUser(authData) {
     if (this.firebaseRefs.user) { this.unbind("user"); }
@@ -54,13 +61,20 @@ export default React.createClass({
             </Nav>
           </CollapsableNav>
         </Navbar>
-        <KumuEmbed className="kumu-embed"
-                   embedId="9272766b04dcc1a8c8e62f8dbdb90804"
-                   mapName="tswrp" />
+        {this.state.showMap &&
+          <KumuEmbed className="kumu-embed"
+                     embedId="9272766b04dcc1a8c8e62f8dbdb90804"
+                     mapName="tswrp"
+                     footer={false}
+                     selection={this.state.mapSelection} />}
         <TransitionGroup transitionName="fade"
                          component="div"
                          className="transition-group container-fluid">
-          <RouteHandler key={router.getCurrentPath()}/>
+          <RouteHandler key={router.getCurrentPath()}
+                        user={this.state.user}
+                        mapFocusProp={this.stateProperty("mapFocus")}
+                        mapSelectionProp={this.stateProperty("mapSelection")}
+                        showMapProp={this.stateProperty("showMap")}/>
         </TransitionGroup>
       </div>
     );
