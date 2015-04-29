@@ -5,11 +5,12 @@ export default React.createClass({
   getDefaultProps() {
     return {
       selection: "",
-      focusDistance: ""
+      focus: "",
+      footer: true
     };
   },
   render() {
-    let url = `http://kumu.io/embed/${this.props.embedId}#${this.props.mapName}/${this.props.selection}?focus=${this.props.focusDistance}`
+    let url = `http://kumu.io/embed/${this.props.embedId}#${this.props.mapName}/${this.props.selection}?footer=${this.props.footer ? "1" : "0" }&focus=${this.props.focus}`
     return <iframe {...this.props} src={url}></iframe>;
   }
 });
