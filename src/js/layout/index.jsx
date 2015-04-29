@@ -25,7 +25,7 @@ export default React.createClass({
   },
   getInitialState() {
     let state = {
-      user: null,
+      auth: null,
       mapId: "",
       mapIdBus: new Bacon.Bus(),
       mapFocus: "",
@@ -33,13 +33,8 @@ export default React.createClass({
     }
     return state;
   },
-  setUser(authData) {
-    if (this.firebaseRefs.user) { this.unbind("user"); }
-    if (authData) {
-      this.bindAsObject(db.child("users").child(authData.twitter.id), "user");
-    } else {
-      this.setState({user: null});
-    }
+  setUser(auth) {
+    this.setState({auth});
   },
   componentWillMount() {
     db.onAuth(this.setUser);
@@ -81,7 +76,7 @@ export default React.createClass({
                          component="div"
                          className="transition-group container-fluid">
           <RouteHandler key={router.getCurrentPath()}
-                        user={this.state.user}
+                        auth={this.state.auth}
                         mapIdBus={this.state.mapIdBus}
                         mapFocusBus={this.state.mapFocusBus} />
         </TransitionGroup>
