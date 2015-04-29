@@ -63,14 +63,11 @@ export default React.createClass({
         <Navbar fluid brand="TSWRP Relationship Map" toggleNavKey={0}>
           <CollapsableNav right eventKey={0}>
             <Nav navbar right>
-              <NavItemLink to="home">
+              <NavItemLink to="map">
                 Map
               </NavItemLink>
-              <NavItemLink to="love">
-                Love
-              </NavItemLink>
               <NavItemLink to="manage">
-                Manage
+                Manage Your Character
               </NavItemLink>
             </Nav>
           </CollapsableNav>
