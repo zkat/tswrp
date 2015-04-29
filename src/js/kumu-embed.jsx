@@ -10,7 +10,7 @@ export default React.createClass({
     };
   },
   render() {
-    let url = `http://kumu.io/embed/${this.props.embedId}#${this.props.mapName}/${this.props.selection}?footer=${this.props.footer ? "1" : "0" }&focus=${this.props.focus}`
+    let url = `http://kumu.io/embed/${this.props.embedId}?footer=${this.props.footer ? "1" : "0" }&focus=${this.props.focus}`
     return <iframe {...this.props} src={url}></iframe>;
   }
 });

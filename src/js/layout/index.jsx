@@ -24,12 +24,14 @@ export default React.createClass({
     router: React.PropTypes.func
   },
   getInitialState() {
-    return {
+    let state = {
       user: null,
-      mapSelection: "",
+      mapId: "",
+      mapIdBus: new Bacon.Bus(),
       mapFocus: "",
-      showMap: true
-    };
+      mapFocusBus: new Bacon.Bus()
+    }
+    return state;
   },
   setUser(authData) {
     if (this.firebaseRefs.user) { this.unbind("user"); }
@@ -39,8 +41,14 @@ export default React.createClass({
       this.setState({user: null});
     }
   },
-  componentWillMount() { db.onAuth(this.setUser); },
-  componentWillUnmount() { db.offAuth(this.setUser); },
+  componentWillMount() {
+    db.onAuth(this.setUser);
+    this.plug(this.state.mapIdBus, "mapId");
+    this.plug(this.state.mapFocusBus, "mapFocus");
+  },
+  componentWillUnmount() {
+    db.offAuth(this.setUser);
+  },
   render() {
     let router = this.context.router;
     let handle = route => {
@@ -61,10 +69,9 @@ export default React.createClass({
             </Nav>
           </CollapsableNav>
         </Navbar>
-        {this.state.showMap &&
+        {this.state.mapId &&
           <KumuEmbed className="kumu-embed"
-                     embedId="9272766b04dcc1a8c8e62f8dbdb90804"
-                     mapName="tswrp"
+                     embedId={this.state.mapId}
                      footer={false}
                      selection={this.state.mapSelection} />}
         <TransitionGroup transitionName="fade"
@@ -72,9 +79,8 @@ export default React.createClass({
                          className="transition-group container-fluid">
           <RouteHandler key={router.getCurrentPath()}
                         user={this.state.user}
-                        mapFocusProp={this.stateProperty("mapFocus")}
-                        mapSelectionProp={this.stateProperty("mapSelection")}
-                        showMapProp={this.stateProperty("showMap")}/>
+                        mapIdBus={this.state.mapIdBus}
+                        mapFocusBus={this.state.mapFocusBus} />
         </TransitionGroup>
       </div>
     );
