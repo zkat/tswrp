@@ -37,7 +37,7 @@ export default React.createClass({
     let tagsRef = this.firebaseRefs.tags;
     let {twitter} = this.props.auth;
     let profile = twitter.cachedUserProfile;
-    let newElement = element.mergeWith({
+    let newElement = element.merge({
       id: twitter.id,
       username: twitter.username,
       displayName: twitter.displayName,
