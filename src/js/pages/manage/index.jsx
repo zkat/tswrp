@@ -1,6 +1,7 @@
 import React from "react";
 import ReactFireMixin from "reactfire";
 import {Button, Input} from "react-bootstrap";
+import Select from "react-select";
 import {Map} from "immutable";
 import db from "js/db";
 
@@ -27,20 +28,14 @@ export default React.createClass({
     return { error: null, element: null };
   },
   componentWillMount() {
+    this.bindAsObject(db.child("tags"), "tags");
     this.props.mapIdBus.push(null);
   },
   updateElement(element={}) {
-    let elementRef = this.firebaseRefs.element;
-    if (!elementRef) { return; }
     element = Map(element);
+    let elementRef = this.props.elementRef
+    let tagsRef = this.firebaseRefs.tags;
     let {twitter} = this.props.auth;
-    let fields = ["firstName", "lastName", "nickname", "faction"]
-    fields.forEach(field => {
-      let ref = this.refs[field];
-      if (ref) {
-        element = element.set(field, ref.getValue() || "");
-      }
-    });
     let profile = twitter.cachedUserProfile;
     let newElement = element.mergeWith({
       id: twitter.id,
@@ -60,11 +55,26 @@ export default React.createClass({
       }
     });
   },
-  makeChangeHandler(prop) {
-    return ev => {
-      let val = ev.target.value;
+  makeChangeHandler(prop, multi) {
+    return (ev, selected) => {
+      let val;
+      if (selected && multi) {
+        val = selected.map(x => x.value);
+      } else if (selected) {
+        val = selected[0] && selected[0].value;
+      } else {
+        val = ev.target.value;
+      }
+      val = val || "";
       this.updateElement(Map(this.props.element).set(prop, val).toObject());
     };
+  },
+  getTagOptions(input, cb) {
+    setTimeout(() => cb(null, {
+      options: input ? [{
+        value: input.toLowerCase(), label: input
+      }].concat(Object.keys(this.state.tags||{})) : []
+    }), 0);
   },
   render() {
     let {auth, element} = this.props;
@@ -92,15 +102,23 @@ export default React.createClass({
                      ref="lastName"
                      onChange={this.makeChangeHandler("lastName")}
                      value={element.lastName} />
-              <Input type='select'
-                     label='Faction'
-                     ref="faction"
-                     onChange={this.makeChangeHandler("faction")}
-                     value={element.faction}>
-                {this.props.factions.map(faction => {
-                  return <option value={faction}>{faction}</option>;
-                })}
-              </Input>
+              <div className="form-group">
+                <label>Faction</label>
+                <Select ref="faction"
+                        onChange={this.makeChangeHandler("faction")}
+                        options={this.props.factions.map(faction => ({
+                          value: faction, label: faction
+                        }))}
+                        value={element.faction} />
+              </div>
+              <div className="form-group">
+                <label>Tags</label>
+                <Select ref="tags"
+                        multi
+                        onChange={this.makeChangeHandler("tags", true)}
+                        asyncOptions={this.getTagOptions}
+                        value={element.tags || []} />
+              </div>
             </form>
           ) : (
             <div>

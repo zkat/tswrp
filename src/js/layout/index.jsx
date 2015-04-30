@@ -94,6 +94,7 @@ export default React.createClass({
                          className="transition-group container-fluid">
           <RouteHandler key={router.getCurrentPath()}
                         element={this.state.element}
+                        elementRef={this.firebaseRefs.element}
                         auth={this.state.auth}
                         mapIdBus={this.state.mapIdBus}
                         mapFocusBus={this.state.mapFocusBus} />
