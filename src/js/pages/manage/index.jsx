@@ -28,79 +28,52 @@ export default React.createClass({
   },
   componentWillMount() {
     this.props.mapIdBus.push(null);
-    this.installElementBinding(this.props);
   },
-  componentWillReceiveProps(props) {
-    this.installElementBinding(props);
-  },
-  auth() {
-    db.authWithOAuthPopup("twitter", (error=null) => {
-      this.setState({error});
-    });
-  },
-  installElementBinding(props) {
-    if (this.firebaseRefs.element) { this.unbind("element"); }
-    if (props.auth) {
-      let ref = db.child("elements").child(props.auth.twitter.id);
-      this.bindAsObject(ref, "element");
-    } else {
-      this.setState({element: null});
-    }
-  },
-  updateElement() {
-    let element = this.state.element || {};
+  updateElement(element={}) {
     let elementRef = this.firebaseRefs.element;
-    let {twitter} = this.props.auth;
     if (!elementRef) { return; }
-    ["firstName", "lastName", "nickname", "faction"].forEach(field => {
+    element = Map(element);
+    let {twitter} = this.props.auth;
+    let fields = ["firstName", "lastName", "nickname", "faction"]
+    fields.forEach(field => {
       let ref = this.refs[field];
       if (ref) {
-        element[field] = ref.getValue() || "";
+        element = element.set(field, ref.getValue() || "");
       }
     });
-    element.id = twitter.id;
-    element.username = twitter.username;
-    element.displayName = twitter.displayName;
     let profile = twitter.cachedUserProfile;
-    element.url = profile.url;
-    element.image = profile.profile_image_url;
-    element.bgImage = profile.profile_background_image_url;
-    element.location = profile.location;
-    element.description = profile.description;
-    elementRef.set(element, error => {
+    let newElement = element.mergeWith({
+      id: twitter.id,
+      username: twitter.username,
+      displayName: twitter.displayName,
+      url: profile.url,
+      image: profile.profile_image_url,
+      banner: profile.profile_banner_url,
+      location: profile.location,
+      description: profile.description
+    });
+    elementRef.set(newElement.toObject(), error => {
       if (error) {
-        this.setState({
-          alert: {
-            type: "danger",
-            msg: "There was an error updating this element"
-          }
-        });
         console.error(
           `Error updating @${this.props.auth.twitter.username}: `,
           error);
-      } else {
-        this.setState({alert: {type: "success", msg: "Saved!"}});
       }
     });
   },
   makeChangeHandler(prop) {
     return ev => {
       let val = ev.target.value;
-      this.setState({
-        element: Map(this.state.element).set(prop, val).toObject()
-      });
-      this.updateElement();
+      this.updateElement(Map(this.props.element).set(prop, val).toObject());
     };
   },
   render() {
-    let {auth} = this.props;
-    let {element, alert} = this.state;
+    let {auth, element} = this.props;
     if (auth) {
       return (
         <div className="manage-page">
           <h1>Hello, @{auth.twitter.username}!</h1>
           <p>
-            Edits below will be immediately saved on edit.
+            Edits below will be immediately.
           </p>
           {element ? (
             <form onSubmit={e => e.preventDefault()}>
@@ -135,21 +108,25 @@ export default React.createClass({
                 You have not created an element associated with this Twitter
                 account yet. Once created, you will be able to edit it.
               </p>
-              <Button onClick={this.updateElement}>
-                Create new Element
+              <p>
+                If this is not the account you want to edit, please
+                <a target="_blank" href="http://twitter.com/logout"> log out </a>
+                of your Twitter account and click the logout button below.
+              </p>
+              <Button onClick={() => this.updateElement()}>
+                Create Character
               </Button>
             </div>
           )}
-          <Button bsStyle="danger" onClick={() => db.unauth()}>
-            Log Out
-          </Button>
         </div>
       );
     } else {
       return (
         <div className="manage-page">
-          <p>Please connect to your Twitter account to edit your character.</p>
-          <Button bsStyle="primary" onClick={() => this.auth()}>Log In</Button>
+          <p>
+            Please connect to your Twitter account by logging in with
+            the link above to edit your character.
+          </p>
         </div>
       );
     }

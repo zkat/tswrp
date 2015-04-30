@@ -9,7 +9,8 @@ import {
   Modal,
   ModalTrigger,
   Nav,
-  Navbar
+  Navbar,
+  NavItem
 } from "react-bootstrap";
 import {NavItemLink} from "react-router-bootstrap";
 import db from "js/db";
@@ -33,9 +34,6 @@ export default React.createClass({
     }
     return state;
   },
-  setUser(auth) {
-    this.setState({auth});
-  },
   componentWillMount() {
     db.onAuth(this.setUser);
     this.plug(this.state.mapIdBus, "mapId");
@@ -44,7 +42,23 @@ export default React.createClass({
   componentWillUnmount() {
     db.offAuth(this.setUser);
   },
+  setUser(auth) {
+    this.setState({auth});
+    if (this.firebaseRefs.element) { this.unbind("element"); }
+    if (auth) {
+      let ref = db.child("elements").child(auth.twitter.id);
+      this.bindAsObject(ref, "element");
+    } else {
+      this.setState({element: null});
+    }
+  },
+  auth() {
+    db.authWithOAuthPopup("twitter", error => {
+      error && console.error("Error logging in: ", error);
+    });
+  },
   render() {
+    let {auth} = this.state;
     let router = this.context.router;
     let handle = route => {
       return e => {
@@ -64,6 +78,9 @@ export default React.createClass({
               <NavItemLink to="manage">
                 Manage Your Character
               </NavItemLink>
+              <NavItem onClick={() => auth ? db.unauth() : this.auth()}>
+                {auth ? "Log Out" : "Log In"}
+              </NavItem>
             </Nav>
           </CollapsableNav>
         </Navbar>
@@ -76,6 +93,7 @@ export default React.createClass({
                          component="div"
                          className="transition-group container-fluid">
           <RouteHandler key={router.getCurrentPath()}
+                        element={this.state.element}
                         auth={this.state.auth}
                         mapIdBus={this.state.mapIdBus}
                         mapFocusBus={this.state.mapFocusBus} />
