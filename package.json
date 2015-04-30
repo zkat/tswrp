@@ -16,6 +16,7 @@
     "classnames": "^1.2.0",
     "firebase": "^2.2.4",
     "immutable": "^3.7.1",
+    "jquery": "^2.1.4",
     "react": "^0.13.1",
     "react-bacon": "0.0.4",
     "react-bootstrap": "^0.21.0",
