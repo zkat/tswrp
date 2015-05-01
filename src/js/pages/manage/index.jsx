@@ -1,14 +1,26 @@
 import React from "react";
 import ReactFireMixin from "reactfire";
-import {Button, Input} from "react-bootstrap";
+import {
+  Button,
+  Input,
+  Glyphicon,
+  ListGroup,
+  ListGroupItem
+} from "react-bootstrap";
 import Select from "react-select";
 import {Map} from "immutable";
 import db from "js/db";
+import ConnDisplay from "js/conn-display";
 
 export default React.createClass({
   mixins: [ReactFireMixin],
   getDefaultProps() {
     return {
+      types: [
+        "PC",
+        "NPC",
+        "Organization"
+      ],
       factions: [
         "",
         "Illuminati",
@@ -55,6 +67,19 @@ export default React.createClass({
       }
     });
   },
+  makeConnection() {
+    let ref = db.child("connections").push();
+    ref.set({
+      id: ref.key(),
+      type: "friendship",
+      from: this.props.element.id,
+      to: null,
+      direction: "between"
+    }, () => {
+      let elref = this.props.elementRef;
+      elref.child("connections").child(ref.key()).set(true);
+    });
+  },
   makeChangeHandler(prop, multi) {
     return (ev, selected) => {
       let val;
@@ -77,16 +102,23 @@ export default React.createClass({
     }), 0);
   },
   render() {
-    let {auth, element} = this.props;
+    let {auth, element, connections} = this.props;
     if (auth) {
       return (
         <div className="manage-page">
           <h1>Hello, @{auth.twitter.username}!</h1>
           <p>
-            Edits below will be immediately.
+            Edits below will be saved immediately. It may take
+            time before your changes propagate to the map.
+          </p>
+          <p>
+            If this is not the account you want to edit, please
+            <a target="_blank" href="http://twitter.com/logout"> log out </a>
+            of your Twitter account and click the logout button below.
           </p>
           {element ? (
             <form onSubmit={e => e.preventDefault()}>
+              <h2>Attributes</h2>
               <Input type="text"
                      label="First"
                      ref="firstName"
@@ -103,11 +135,21 @@ export default React.createClass({
                      onChange={this.makeChangeHandler("lastName")}
                      value={element.lastName} />
               <div className="form-group">
+                <label>Type</label>
+                <Select ref="type"
+                        onChange={this.makeChangeHandler("type")}
+                        options={this.props.types.map(t => ({
+                          value: t.toLowerCase(), label: t
+                        }))}
+                        value={element.type} />
+              </div>
+              <div className="form-group">
                 <label>Faction</label>
                 <Select ref="faction"
                         onChange={this.makeChangeHandler("faction")}
                         options={this.props.factions.map(faction => ({
-                          value: faction, label: faction
+                          value: faction.toLowerCase(),
+                          label: faction
                         }))}
                         value={element.faction} />
               </div>
@@ -119,17 +161,24 @@ export default React.createClass({
                         asyncOptions={this.getTagOptions}
                         value={element.tags || []} />
               </div>
+              <h2>Connections <Button bsStyle="primary"
+                      onClick={() => this.makeConnection()}>
+                <Glyphicon glyph="plus" />
+              </Button>
+            </h2>
+              <ListGroup>
+                {(Object.keys(element.connections||{})).map(c => (
+                  <ListGroupItem key={c}>
+                    <ConnDisplay connId={c} />
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
             </form>
           ) : (
             <div>
               <p>
                 You have not created an element associated with this Twitter
                 account yet. Once created, you will be able to edit it.
-              </p>
-              <p>
-                If this is not the account you want to edit, please
-                <a target="_blank" href="http://twitter.com/logout"> log out </a>
-                of your Twitter account and click the logout button below.
               </p>
               <Button onClick={() => this.updateElement()}>
                 Create Character
