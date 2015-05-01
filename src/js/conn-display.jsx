@@ -1,6 +1,6 @@
 import React from "react";
 import ReactFireMixin from "reactfire";
-import {Input} from "react-bootstrap";
+import {Button, Input} from "react-bootstrap";
 import Select from "react-select";
 import _ from "lodash";
 import db from "js/db";
@@ -38,6 +38,15 @@ export default React.createClass({
     } else {
       this.setState({connection: null});
     }
+  },
+  removeConn() {
+    let conn = this.state.connection;
+    db.child("connections").child(conn.id).remove();
+    db.child("elements")
+      .child(conn.from)
+      .child("connections")
+      .child(conn.id)
+      .remove();
   },
   possibleTags(type) {
     switch (type) {
@@ -106,7 +115,7 @@ export default React.createClass({
       if (el.id !== conn.from) {
         acc.push({
           value: el.id,
-          label: <span>{el.displayName} <small>@{el.username}</small></span>
+          label: `${el.displayName} @${el.username}`
         });
       }
       return acc;
@@ -139,6 +148,10 @@ export default React.createClass({
             options={tagOptions}
             value={conn.tags || []} />
         </div>
+        <Button bsStyle="danger"
+                onClick={() => this.removeConn()}>
+          Delete
+        </Button>
       </div>
     );
   }

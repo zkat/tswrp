@@ -72,9 +72,7 @@ export default React.createClass({
     ref.set({
       id: ref.key(),
       type: "friendship",
-      from: this.props.element.id,
-      to: null,
-      direction: "between"
+      from: this.props.element.id
     }, () => {
       let elref = this.props.elementRef;
       elref.child("connections").child(ref.key()).set(true);
