@@ -112,7 +112,7 @@ export default React.createClass({
           <p>
             If this is not the account you want to edit, please
             <a target="_blank" href="http://twitter.com/logout"> log out </a>
-            of your Twitter account and click the logout button below.
+            of your Twitter account and then log out of this site.
           </p>
           {element ? (
             <form onSubmit={e => e.preventDefault()}>
