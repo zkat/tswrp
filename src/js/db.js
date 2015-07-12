@@ -1,3 +1,3 @@
-import Firebase from "firebase";
+import Firebase from 'firebase'
 
-export default new Firebase(process.env["FIREBASE_URL"]);
+export default new Firebase(process.env['FIREBASE_URL'])
