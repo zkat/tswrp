@@ -165,7 +165,7 @@ export default React.createClass({
               </Button>
             </h2>
               <ListGroup>
-                {(Object.keys(element.connections||{})).map(c => (
+                {(Object.keys(element.connections||{}).reverse()).map(c => (
                   <ListGroupItem key={c}>
                     <ConnDisplay connId={c} />
                   </ListGroupItem>
